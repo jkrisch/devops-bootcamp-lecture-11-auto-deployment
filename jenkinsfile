@@ -1,10 +1,10 @@
 pipeline{
-    node any
+    agent any
     
     environment{
-        $IMAGE_REGISTRY = "https://registry.hub.docker.com"
-        $IMAGE_REPO = "jaykay84"
-        $IMAGE_TAG = 1.0.${BUILD_NUMBER}
+        IMAGE_REGISTRY = "https://registry.hub.docker.com"
+        IMAGE_REPO = "jaykay84"
+        IMAGE_TAG = 1.0.${BUILD_NUMBER}
     }
 
     stages{
