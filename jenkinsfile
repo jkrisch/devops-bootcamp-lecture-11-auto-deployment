@@ -13,7 +13,7 @@ pipeline{
                 echo 'Building app using gradle'
                 sh """
                     cd bootcamp-java-app
-                    gradle clean build
+                    gradle wrapper clean build
                 """
                 
             }
