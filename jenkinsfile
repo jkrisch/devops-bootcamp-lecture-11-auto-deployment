@@ -31,9 +31,11 @@ pipeline{
         }
         
         stage('update deployment'){
-            sh """
-                helm upgrade --install my-java-app -f java-app/values.yaml --set my-java-app.deployment.imageVersion=$IMAGE_TAG
-            """
+            steps{
+                sh """
+                    helm upgrade --install my-java-app -f java-app/values.yaml --set my-java-app.deployment.imageVersion=$IMAGE_TAG
+                """
+            }
         }
     }
 }
