@@ -11,7 +11,7 @@ pipeline{
         stage('build app'){
             steps{
                 echo 'Building app using gradle'
-                sh '. gradlew clean build'
+                sh '. bootcamp-java-app/gradlew clean build'
                 
             }
         }
