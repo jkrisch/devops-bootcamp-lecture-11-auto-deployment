@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.appname }}
+  labels:
+    app: {{ .Values.deployment.appname }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.appname }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.deployment.appname }}
+    spec:
+      containers:
+        - name: {{ .Values.deployment.appname }}
+          image: "{{ .Values.deployment.imageRepo | default "jaykay84" }}/{{ .Values.deployment.imageName | default "java-app" }}:{{ .Values.deployment.imageVersion | default "mysqldb" }}"
+          imagePullPolicy: {{ .Values.deployment.pullPolicy | quote | default "Always"}}
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.Name | default "db-secrets" }}
+                  key: username
+            - name: DB_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.Name | default "db-secrets" }}
+                  key: password
+            - name: DB_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: database_server
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.Name | default "db-secrets" }}
+                  key: db_name
+          ports:
+            - containerPort: {{ .Values.deployment.containerPort}}

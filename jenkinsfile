@@ -1,0 +1,39 @@
+pipeline{
+    node any
+    
+    environment{
+        $IMAGE_REGISTRY = "https://registry.hub.docker.com"
+        $IMAGE_REPO = "jaykay84"
+        $IMAGE_TAG = 1.0.${BUILD_NUMBER}
+    }
+
+    stages{
+        stage('build app'){
+            steps{
+                echo 'Building app using gradle'
+                sh '. gradlew clean build'
+                
+            }
+        }
+        
+        stage('build container image and push the image'){
+            steps{
+                withCredentials([
+                    usernamePassword([credentialsId:'docker-login',usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'])
+                ]){
+                    sh """
+                        docker login -u $USERNAME -p $PASSWORD $IMAGE_REGISTRY
+                        docker build -t $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG .
+                        docker push $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG
+                    """
+                }
+            }
+        }
+        
+        stage('update deployment'){
+            sh """
+                helm upgrade --install my-java-app -f java-app/values.yaml --set my-java-app.deployment.imageVersion=$IMAGE_TAG
+            """
+        }
+    }
+}
