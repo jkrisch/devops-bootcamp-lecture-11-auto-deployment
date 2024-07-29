@@ -25,9 +25,9 @@ pipeline{
                     usernamePassword([credentialsId:'docker-login',usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'])
                 ]){
                     sh """
-                        podman login -u $USERNAME -p $PASSWORD $IMAGE_REGISTRY
-                        podman build -t $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG .
-                        podman push $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG
+                        docker login -u $USERNAME -p $PASSWORD $IMAGE_REGISTRY
+                        docker build -t $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG .
+                        docker push $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG
                     """
                 }
             }
