@@ -13,7 +13,7 @@ pipeline{
                 echo 'Building app using gradle'
                 sh """
                     cd bootcamp-java-app
-                    gradle wrapper clean build
+                    gradle clean build
                 """
                 
             }
@@ -25,9 +25,9 @@ pipeline{
                     usernamePassword([credentialsId:'docker-login',usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'])
                 ]){
                     sh """
-                        docker login -u $USERNAME -p $PASSWORD $IMAGE_REGISTRY
-                        docker build -t $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG .
-                        docker push $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG
+                        podman login -u $USERNAME -p $PASSWORD $IMAGE_REGISTRY
+                        podman build -t $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG .
+                        podman push $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG
                     """
                 }
             }
