@@ -25,7 +25,7 @@ pipeline{
                     usernamePassword([credentialsId:'docker-login',usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'])
                 ]){
                     sh """
-                        cd $WORKSPACE
+                        cd "$WORKSPACE"
                         docker login -u $USERNAME -p $PASSWORD $IMAGE_REGISTRY
                         docker build -t $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG .
                         docker push $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG
