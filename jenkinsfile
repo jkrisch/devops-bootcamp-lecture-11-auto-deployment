@@ -5,6 +5,7 @@ pipeline{
         IMAGE_REGISTRY = "registry.hub.docker.com"
         IMAGE_REPO = "jaykay84"
         IMAGE_TAG = "1.0.${BUILD_NUMBER}"
+        IMAGE_NAME = "java-app"
     }
 
     stages{
@@ -27,8 +28,8 @@ pipeline{
                 ]){
                     sh """
                         docker login -u $USERNAME -p $PASSWORD $IMAGE_REGISTRY
-                        docker build -t $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG .
-                        docker push $IMAGE_REGISTRY/$IMAGE_REPO:$IMAGE_TAG
+                        docker build -t $IMAGE_REGISTRY/$IMAGE_REPO/$IMAGE_NAME:$IMAGE_TAG .
+                        docker push $IMAGE_REGISTRY/$IMAGE_REPO/$IMAGE_NAME:$IMAGE_TAG
                     """
                 }
             }
