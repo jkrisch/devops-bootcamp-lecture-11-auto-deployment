@@ -1,8 +1,9 @@
-FROM openjdk:19-jdk-alpine3.16
+FROM amazoncorretto:17-alpine-jdk
 
-ADD /app/ /opt/app
+EXPOSE 8080
 
-WORKDIR /opt/app
+RUN mkdir /usr/app
+COPY ./bootcamp-java-mysql/build/libs/java-mysql-app-k8s-ex10-1.0-SNAPSHOT.jar /usr/app
+WORKDIR /usr/app
 
-CMD ["java","-jar","bootcamp-java-mysql-project-1.0-SNAPSHOT.jar"]
-
+ENTRYPOINT ["java", "-jar", "java-mysql-app-k8s-ex10-1.0-SNAPSHOT.jar"]
