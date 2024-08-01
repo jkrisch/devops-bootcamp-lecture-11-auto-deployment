@@ -6,6 +6,7 @@ pipeline{
         IMAGE_REPO = "jaykay84"
         IMAGE_TAG = "1.0.${BUILD_NUMBER}"
         IMAGE_NAME = "java-app"
+        APPNAME = "my-java-app"
     }
 
     stages{
@@ -38,7 +39,7 @@ pipeline{
         stage('update deployment'){
             steps{
                 sh """
-                    helm upgrade --install my-java-app -f java-app/values.yaml --set my-java-app.deployment.imageVersion=$IMAGE_TAG
+                    helm upgrade $APPNAME java-app --namespace my-java-app-ns -f "./java-app/values.yaml" --set deployment.imageVersion=$IMAGE_TAG
                 """
             }
         }

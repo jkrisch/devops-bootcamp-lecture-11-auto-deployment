@@ -1,0 +1,33 @@
+FROM jenkins/jenkins:2.467-jdk21
+USER root
+
+ARG DOCKER_GID=138
+
+RUN mkdir /var/jenkins_home/.kube
+COPY kubeconfig /var/jenkins_home/.kube/
+
+# Install Docker CLI, gradle and curl
+RUN apt-get update && \
+    apt-get install -y docker.io \
+                       gradle \
+                       curl
+
+# Install helm
+RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
+    chmod 700 get_helm.sh && \
+    ./get_helm.sh
+
+# Install kubectl
+RUN curl -LO https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl && \
+    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+ENV KUBECONFIG=/var/jenkins_home/.kube/kubeconfig
+
+#install aws-iam-authenticator
+RUN curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.6.11/aws-iam-authenticator_0.6.11_linux_amd64 && \
+    chmod +x ./aws-iam-authenticator && \
+    mv ./aws-iam-authenticator /usr/local/bin 
+
+RUN sed -i "s/docker:x:[0-9]*/docker:x:${DOCKER_GID}/" /etc/group && \
+    usermod -aG docker jenkins
+
+USER jenkins
