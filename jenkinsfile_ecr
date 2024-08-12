@@ -2,7 +2,7 @@ pipeline{
     agent any
     
     environment{
-        IMAGE_REGISTRY = "420808648864.dkr.ecr.us-east-1.amazonaws.com"
+        IMAGE_REGISTRY = "420808648864.dkr.ecr.eu-central-1.amazonaws.com"
         IMAGE_REPO = "java-app"
         IMAGE_TAG = "1.0.${BUILD_NUMBER}"
         IMAGE_NAME = "java-app"
