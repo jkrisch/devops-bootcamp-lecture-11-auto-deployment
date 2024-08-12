@@ -1,0 +1,52 @@
+pipeline{
+    agent any
+    
+    environment{
+        IMAGE_REGISTRY = "420808648864.dkr.ecr.us-east-1.amazonaws.com"
+        IMAGE_REPO = "java-app"
+        IMAGE_TAG = "1.0.${BUILD_NUMBER}"
+        IMAGE_NAME = "java-app"
+        APPNAME = "my-java-app"
+        AWS_ACCESS_KEY = credentials('AWS_ACCESS_KEY')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    }
+
+    stages{
+        stage('build app'){
+            steps{
+                echo 'Building app using gradle'
+                sh """
+                    cd bootcamp-java-app
+                    ./gradlew clean build
+                    cd ..
+                """
+                
+            }
+        }
+        
+        stage('build container image and push the image'){
+            steps{
+                withCredentials([
+                    usernamePassword([credentialsId:'docker-login',usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'])
+                ]){
+                    sh """
+                        aws ecr get-login-password --region us-east-1 --access-key-id $AWS_ACCESS_KEY --secret-access-key $AWS_SECRET_ACCESS_KEY | \
+                        docker login --username AWS --password-stdin $IMAGE_REGISTRY
+                        
+                        docker login -u $USERNAME -p $PASSWORD $IMAGE_REGISTRY
+                        docker build -t $IMAGE_REGISTRY/$IMAGE_REPO/$IMAGE_NAME:$IMAGE_TAG .
+                        docker push $IMAGE_REGISTRY/$IMAGE_REPO/$IMAGE_NAME:$IMAGE_TAG
+                    """
+                }
+            }
+        }
+        
+        stage('update deployment'){
+            steps{
+                sh """
+                    helm upgrade $APPNAME java-app --namespace my-java-app-ns -f "./java-app/values.yaml" --set deployment.imageVersion=$IMAGE_TAG
+                """
+            }
+        }
+    }
+}
