@@ -44,6 +44,7 @@ pipeline{
         stage('update deployment'){
             steps{
                 sh """
+                    helm upgrade $APPNAME java-app --namespace my-java-app-ns -f "./java-app/values.yaml" --set deployment.imageRegistry=$IMAGE_REGISTRY
                     helm upgrade $APPNAME java-app --namespace my-java-app-ns -f "./java-app/values.yaml" --set deployment.imageVersion=$IMAGE_TAG
                 """
             }
