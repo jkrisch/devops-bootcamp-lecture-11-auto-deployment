@@ -31,7 +31,7 @@ pipeline{
                     usernamePassword([credentialsId:'docker-login',usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'])
                 ]){
                     sh """
-                        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $IMAGE_REGISTRY
+                        aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $IMAGE_REGISTRY
                         
                         docker login -u $USERNAME -p $PASSWORD $IMAGE_REGISTRY
                         docker build -t $IMAGE_REGISTRY/$IMAGE_REPO/$IMAGE_NAME:$IMAGE_TAG .
