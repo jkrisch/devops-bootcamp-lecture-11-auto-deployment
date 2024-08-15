@@ -1,6 +1,6 @@
 deployment:
   appname: my-java-app
-  imageRegistry: jaykay84
+  imageRepo: jaykay84
   imageName: java-app
   imageVersion: mysqldb
   pullPolicy: Always

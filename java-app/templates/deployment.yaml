@@ -41,3 +41,5 @@ spec:
                   key: db_name
           ports:
             - containerPort: {{ .Values.deployment.containerPort}}
+      imagePullSecrets:
+        - name: ecr_secret
